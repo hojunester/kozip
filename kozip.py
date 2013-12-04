@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # this script supports shift-jis and euc-kr encodings (basically, Microsoft's Korean and Japanese encoding.)
 
+
 import sys, os, zipfile, argparse
 
 PARSER = argparse.ArgumentParser(
@@ -24,11 +25,20 @@ def unzip(file, dir, lang):
 
     zfobj = zipfile.ZipFile(file)
     for info in zfobj.infolist():
-        info.filename =  info.filename.decode(lang).encode('utf-8')
+        #info.filename =  info.filename.decode(lang).encode('utf-8')# this section needs to be rewritten for python3. Only problem? This is the part that performs the most important bit: transcoding the file names!
         zfobj.extract(info, dir)
 
-        print 'extracting', info.filename
+        print('extracting %s' % info.filename)
 
 if __name__ == '__main__':
     args = PARSER.parse_args()
     unzip(args.file, args.exdir, args.lang)
+
+# reference:
+
+    #if sys.version_info < (3, 0):
+        
+        #info.filename = bytes(info.filename,lang).encode('utf-8')
+    #else:
+        #info.filename = info.filename.decode(lang).encode('utf-8')
+# that bit of code was given to me by slaveriq on the jupiter broadcasting irc. I'll make tha the base of the future rewrite.
