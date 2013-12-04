@@ -2,7 +2,18 @@
 # -*- coding: utf-8 -*-
 # this script supports shift-jis and euc-kr encodings (basically, Microsoft's Korean and Japanese encoding.)
 
-import sys, os, zipfile
+import sys, os, zipfile, argparse
+
+PARSER = argparse.ArgumentParser(
+        description='unzip which supports shift-jis and euc-kr filename encodings')
+
+PARSER.add_argument('file', default=None, type=str)
+PARSER.add_argument('exdir', nargs='?', default=None, type=str)
+PARSER.add_argument('lang', 
+    nargs='?',
+    default='euc-kr',
+    choices=['euc-kr', 'shift-jis'],
+    type=str)
 
 def unzip(file, dir, lang):
     if dir is None:
@@ -10,16 +21,6 @@ def unzip(file, dir, lang):
         os.mkdir(dir)
     else:
         os.mkdir(dir)
-
-    if lang == None:
-        lang = 'euc-kr'
-    elif lang == jap:
-        lang = "shift-jis"
-    elif lang == kor:
-        lang == 'euc-kr'
-    else:
-        print("please choose 'kor' or 'jap' as languages.")
-        exit()
 
     zfobj = zipfile.ZipFile(file)
     for info in zfobj.infolist():
@@ -29,15 +30,5 @@ def unzip(file, dir, lang):
         print 'extracting', info.filename
 
 if __name__ == '__main__':
-    argc = len(sys.argv)
-
-    if argc == 1:
-        print('Usage: {0} file [exdir] [lang]'.format(sys.argv[0]))
-    elif argc == 2:
-        unzip(sys.argv[1], None, None)
-    elif argc == 3:
-        unzip(sys.argv[1], sys.arv[2], None)
-    elif argc == 4:
-        unzip(sys.argv[1], sys.argv[2], sys.argv[3])
-    else:
-        print('Usage: {0} file [exdir] [lang]'.format(sys.argv[0]))
+    args = PARSER.parse_args()
+    unzip(args.file, args.exdir, args.lang)
