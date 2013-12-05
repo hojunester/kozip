@@ -23,17 +23,16 @@ def unzip(file, dir, lang):
     if os.path.exists(dir) is not True:
         os.mkdir(dir)
 
-
-    zfobj = zipfile.ZipFile(file)
-        if platform.python_version().startswith('3'):# workaround: just call on 7zp and fix the files later.
+    if platform.python_version().startswith('3'):# workaround: just call on 7zp and fix the files later.
             #info.filename = bytes(info.filename, lang).encode('utf-8')
             os.system('env LANG=C 7z x %s -w %s' % (file, dir))
             os.system('convmv -f %s -t utf-8 -r %s' % (lang, dir))
-        else:
-            for info in zfobj.infolist():
-                info.filename =  info.filename.decode(lang).encode('utf-8')
-                print('extracting %s' % info.filename)
-                zfobj.extract(info, dir)
+    else:
+        for info in zfobj.infolist():
+            zfobj = zipfile.ZipFile(file)
+            info.filename =  info.filename.decode(lang).encode('utf-8')
+            print('extracting %s' % info.filename)
+            zfobj.extract(info, dir)
 
 if __name__ == '__main__':
     args = PARSER.parse_args()
