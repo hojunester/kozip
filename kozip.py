@@ -25,8 +25,10 @@ def unzip(file, dir, lang):
 
     zfobj = zipfile.ZipFile(file)
     for info in zfobj.infolist():
-        #info.filename =  info.filename.decode(lang).encode('utf-8')# this section needs to be rewritten for python3. Only problem? This is the part that performs the most important bit: transcoding the file names!
-        zfobj.extract(info, dir)
+        if sys.version_info < (3.0):
+            info.filename =  info.filename.decode(lang).encode('utf-8')
+        else:
+            info.filename = bytes(info.filename, lang).encode('utf-8')
 
         print('extracting %s' % info.filename)
 
