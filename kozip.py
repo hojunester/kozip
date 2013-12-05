@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # this script supports shift-jis and euc-kr encodings (basically, Microsoft's Korean and Japanese encoding.)
 
 
-import sys, os, zipfile, argparse
+import sys, os, zipfile, argparse, platform
 
 PARSER = argparse.ArgumentParser(
         description='unzip which supports shift-jis and euc-kr filename encodings')
@@ -13,7 +13,7 @@ PARSER.add_argument('exdir', nargs='?', default=None, type=str)
 PARSER.add_argument('lang', 
     nargs='?',
     default='euc-kr',
-    choices=['euc-kr', 'shift-jis'],
+    choices=['euc-kr', 'shiftjis'],
     type=str)
 
 def unzip(file, dir, lang):
@@ -25,13 +25,15 @@ def unzip(file, dir, lang):
 
 
     zfobj = zipfile.ZipFile(file)
-    for info in zfobj.infolist():
-        if sys.version_info < (3.0):
-            info.filename =  info.filename.decode(lang).encode('utf-8')
+        if platform.python_version().startswith('3'):# workaround: just call on 7zp and fix the files later.
+            #info.filename = bytes(info.filename, lang).encode('utf-8')
+            os.system('env LANG=C 7z x %s -w %s' % (file, dir))
+            os.system('convmv -f %s -t utf-8 -r %s' % (lang, dir))
         else:
-            info.filename = bytes(info.filename, lang).encode('utf-8')
-
-        print('extracting %s' % info.filename)
+            for info in zfobj.infolist():
+                info.filename =  info.filename.decode(lang).encode('utf-8')
+                print('extracting %s' % info.filename)
+                zfobj.extract(info, dir)
 
 if __name__ == '__main__':
     args = PARSER.parse_args()
