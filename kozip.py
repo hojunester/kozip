@@ -25,8 +25,8 @@ def unzip(file, dir, lang):
 
     if platform.python_version().startswith('3'):# workaround: just call on 7zp and fix the files later.
             #info.filename = bytes(info.filename, lang).encode('utf-8')
-            os.system('env LANG=C 7z x %s -w %s' % (file, dir))
-            os.system('convmv -f %s -t utf-8 -r %s' % (lang, dir))
+            os.system('env LANG=C 7z x %s -oc:%s' % (file, dir))
+            os.system('convmv --notest -f %s -t utf-8 -r %s' % (lang, dir))
     else:
         for info in zfobj.infolist():
             zfobj = zipfile.ZipFile(file)
