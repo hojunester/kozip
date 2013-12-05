@@ -19,9 +19,10 @@ PARSER.add_argument('lang',
 def unzip(file, dir, lang):
     if dir is None:
         dir = os.path.splitext(file)[0]
+
+    if os.path.exists(dir) is not True:
         os.mkdir(dir)
-    else:
-        os.mkdir(dir)
+
 
     zfobj = zipfile.ZipFile(file)
     for info in zfobj.infolist():
