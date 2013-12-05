@@ -28,12 +28,8 @@ def unzip(file, dir, lang):
         zfobj.extract(info, dir)
 
         print 'extracting', info.filename
-    print("extraction completed. Do you want to open %s?" % dir)
-    appr = raw_input("[y/N]")
-    if appr == 'y' or appr == 'Y':
+    print("extraction completed. Opening %s..." % dir)
         os.system('xdg-open %s' % dir)
-    else:
-        print("quit.")
 
 
 if __name__ == '__main__':
