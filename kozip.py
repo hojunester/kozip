@@ -28,8 +28,9 @@ def unzip(file, dir, lang):
             os.system('env LANG=C 7z x %s -oc:%s' % (file, dir))
             os.system('convmv --notest -f %s -t utf-8 -r %s' % (lang, dir))
     else:
+        zfobj = zipfile.ZipFile(file)
+
         for info in zfobj.infolist():
-            zfobj = zipfile.ZipFile(file)
             info.filename =  info.filename.decode(lang).encode('utf-8')
             print('extracting %s' % info.filename)
             zfobj.extract(info, dir)
