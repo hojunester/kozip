@@ -18,8 +18,8 @@ PARSER.add_argument('lang',
 def unzip(file, dir, lang):
     if dir is None:
         dir = os.path.splitext(file)[0]
-        os.mkdir(dir)
-    else:
+
+    if os.path.exists(dir) is not True:
         os.mkdir(dir)
 
     zfobj = zipfile.ZipFile(file)
@@ -28,6 +28,13 @@ def unzip(file, dir, lang):
         zfobj.extract(info, dir)
 
         print 'extracting', info.filename
+    print("extraction completed. Do you want to open %s?" % dir)
+    appr = raw_input("[y/N]")
+    if appr == 'y' or appr == 'Y':
+        os.system('xdg-open %s' % dir)
+    else:
+        print("quit.")
+
 
 if __name__ == '__main__':
     args = PARSER.parse_args()
